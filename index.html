@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="km">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ប្រព័ន្ធប្រឡងអន្តរកម្ម៖ ADN ជាទម្រព័ត៌មានសេនេទិច</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts for Khmer -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Kantumruy+Pro:wght@300;400;500;600;700&family=Siemreap&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Kantumruy Pro', 'Siemreap', sans-serif;
+        }
+        @keyframes pulse-ring {
+            0% { transform: scale(0.96); opacity: 0.85; }
+            50% { transform: scale(1.04); opacity: 1; }
+            100% { transform: scale(0.96); opacity: 0.85; }
+        }
+        .timer-warning-alert {
+            animation: pulse-ring 1s infinite;
+        }
+    </style>
+</head>
+<body class="bg-slate-100 text-slate-800 min-h-screen flex flex-col antialiased">
+
+    <!-- Top App Navigation -->
+    <header class="bg-gradient-to-r from-blue-700 via-indigo-700 to-teal-600 text-white shadow-md sticky top-0 z-50">
+        <div class="max-w-4xl mx-auto px-4 py-3.5 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <span class="w-10 h-10 rounded-xl bg-white/15 flex items-center justify-center text-xl shadow-inner">🧬</span>
+                <div>
+                    <span class="text-[11px] font-semibold uppercase tracking-wider bg-white/20 px-2 py-0.5 rounded-full">ជីវវិទ្យា ថ្នាក់ទី១២</span>
+                    <h1 class="text-base md:text-lg font-bold leading-tight mt-0.5">ជំពូកទី៥ មេរៀនទី១៖ ADN ជាទម្រព័ត៌មានសេនេទិច</h1>
+                </div>
+            </div>
+
+            <!-- Quiz Timer & Status -->
+            <div id="quiz-header-status" class="hidden flex items-center gap-3.5">
+                <div class="text-right hidden sm:block">
+                    <span id="student-badge-text" class="text-xs text-blue-100 block font-medium">សិស្ស</span>
+                    <span id="header-progress" class="text-sm font-bold">1 / 25</span>
+                </div>
+                <!-- Countdown Badge -->
+                <div id="timer-box" class="flex items-center gap-1.5 bg-white text-slate-900 px-3 py-1.5 rounded-xl shadow-sm border border-white/40 font-mono">
+                    <span class="text-base">⏱️</span>
+                    <span id="timer-display" class="text-lg font-extrabold text-blue-700">01:00</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Linear Progress Bar for Current Question Timer -->
+        <div id="timer-bar-container" class="hidden w-full bg-blue-950/40 h-1.5">
+            <div id="timer-bar-fill" class="bg-amber-400 h-1.5 transition-all duration-1000 ease-linear w-full"></div>
+        </div>
+    </header>
+
+    <main class="flex-1 max-w-4xl w-full mx-auto p-4 md:p-6 flex flex-col justify-center">
+
+        <!-- Screen 1: Registration & Rules Screen -->
+        <div id="start-screen" class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-10 text-center">
+            <div class="w-20 h-20 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-5 text-4xl shadow-inner border border-blue-100">
+                🧬
+            </div>
+            <h2 class="text-2xl md:text-3xl font-extrabold text-slate-900 mb-2">តេស្តវាស់ស្ទង់សមត្ថភាពអន្តរកម្ម</h2>
+            <p class="text-slate-600 max-w-xl mx-auto mb-6 text-sm leading-relaxed">
+                សូមស្វាគមន៍មកកាន់ការប្រឡងសាកល្បងសមត្ថភាពលើមេរៀនម៉ូលេគុល ADN! ប្រព័ន្ធត្រូវបានកំណត់ម៉ោងស្វ័យប្រវត្តិតាមស្តង់ដារប្រឡង ដើម្បីពង្រឹងល្បឿន និងការចងចាំ។
+            </p>
+
+            <!-- Rules Grid -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3.5 max-w-xl mx-auto mb-7 text-left text-sm">
+                <div class="bg-blue-50/70 p-4 rounded-xl border border-blue-200/80">
+                    <span class="text-xs font-bold uppercase text-blue-600 block mb-1">១. ចំនួនសំណួរ</span>
+                    <p class="text-lg font-bold text-slate-900">២៥ សំណួរ</p>
+                    <p class="text-xs text-slate-500 mt-1">គ្របដណ្តប់លើទម្រង់ និងស្វ័យតម្លើងទ្វេ ADN</p>
+                </div>
+                <div class="bg-emerald-50/70 p-4 rounded-xl border border-emerald-200/80">
+                    <span class="text-xs font-bold uppercase text-emerald-600 block mb-1">២. ពិន្ទុទទួលបាន</span>
+                    <p class="text-lg font-bold text-slate-900">៣ ពិន្ទុ / សំណួរ</p>
+                    <p class="text-xs text-slate-500 mt-1">ពិន្ទុពេញសរុបស្មើនឹង <strong>៧៥ ពិន្ទុ</strong></p>
+                </div>
+                <div class="bg-amber-50/70 p-4 rounded-xl border border-amber-200/80">
+                    <span class="text-xs font-bold uppercase text-amber-600 block mb-1">៣. រយៈពេលឆ្លើយ</span>
+                    <p class="text-lg font-bold text-slate-900">១ នាទី / សំណួរ</p>
+                    <p class="text-xs text-slate-500 mt-1">អស់ពេល ប្រព័ន្ធរំលងទៅសំណួរបន្ទាប់</p>
+                </div>
+            </div>
+
+            <!-- Student Identification Card -->
+            <div class="max-w-md mx-auto bg-slate-50 border border-slate-200 rounded-xl p-5 mb-7 text-left shadow-sm">
+                <h3 class="text-sm font-bold text-slate-800 mb-3 flex items-center gap-1.5">
+                    <span>📝</span> សូមបំពេញព័ត៌មានផ្ទាល់ខ្លួនមុនពេលចាប់ផ្តើម៖
+                </h3>
+                <div class="space-y-3.5">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 mb-1">គោត្តនាម និងនាម <span class="text-rose-500">*</span></label>
+                        <input type="text" id="student-name" placeholder="ឧ. ចាន់ សុខា" class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm bg-white" required>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 mb-1">ថ្នាក់រៀន <span class="text-rose-500">*</span></label>
+                        <input type="text" id="student-class" placeholder="ឧ. 12A, 11NGS-P1" class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm bg-white" required>
+                    </div>
+                </div>
+            </div>
+
+            <button onclick="validateAndStartQuiz()" class="inline-flex items-center justify-center px-8 py-3.5 bg-blue-600 hover:bg-blue-700 active:scale-95 text-white font-semibold text-base rounded-xl shadow-md hover:shadow-lg transition">
+                ចាប់ផ្តើមប្រឡងឥឡូវនេះ →
+            </button>
+        </div>
+
+        <!-- Screen 2: Active Timed Quiz Screen -->
+        <div id="quiz-screen" class="hidden">
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 relative">
+                
+                <!-- Question Metadata Header -->
+                <div class="flex items-center justify-between border-b border-slate-100 pb-4 mb-5">
+                    <div class="flex items-center gap-2">
+                        <span id="current-q-num" class="text-xs md:text-sm font-bold text-blue-700 bg-blue-50 px-3 py-1 rounded-md border border-blue-100">
+                            សំណួរទី ១ នៃ ២៥
+                        </span>
+                        <span class="text-xs font-semibold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2.5 py-1 rounded-md">
+                            តម្លៃ ៣ ពិន្ទុ
+                        </span>
+                    </div>
+                    <span id="time-warning-label" class="text-xs text-slate-500 flex items-center gap-1 font-medium">
+                        ⏳ សល់ពេល៖ <strong id="q-timer-inline" class="text-blue-700 font-mono text-sm">60</strong> វិនាទី
+                    </span>
+                </div>
+
+                <!-- Question Text -->
+                <h3 id="question-text" class="text-lg md:text-xl font-bold text-slate-900 mb-6 leading-snug">
+                    សំណួរ...
+                </h3>
+
+                <!-- Options List (A, B, C, D) -->
+                <div id="options-container" class="space-y-3 mb-8">
+                    <!-- Injected dynamically -->
+                </div>
+
+                <!-- Footer Navigation -->
+                <div class="flex items-center justify-between pt-4 border-t border-slate-100">
+                    <span class="text-xs text-slate-400 italic">ជ្រើសរើសចម្លើយ រួចចុច «បន្ទាប់» ឬរង់ចាំដល់ចប់ម៉ោង</span>
+                    <button id="next-btn" onclick="nextQuestionByButton()" class="px-7 py-2.5 rounded-lg bg-blue-600 text-white font-semibold hover:bg-blue-700 active:scale-95 transition shadow">
+                        បន្ទាប់ →
+                    </button>
+                </div>
+            </div>
+
+            <!-- Question Number Indicator Palette -->
+            <div class="mt-5 bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+                <div class="flex items-center justify-between mb-2.5">
+                    <p class="text-xs font-bold text-slate-600 uppercase tracking-wide">តារាងស្ថានភាពសំណួរ៖</p>
+                    <span class="text-[11px] text-slate-400">ខៀវ = បានឆ្លើយ | ប្រផេះ = មិនទាន់ឆ្លើយ</span>
+                </div>
+                <div id="palette-container" class="flex flex-wrap gap-1.5">
+                    <!-- Question numbers injected dynamically -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Screen 3: Score Result & Review Screen -->
+        <div id="result-screen" class="hidden space-y-6">
+            
+            <!-- Result Summary Card -->
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 text-center">
+                <span id="result-badge" class="px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wide bg-blue-100 text-blue-800">
+                    លទ្ធផលប្រឡង
+                </span>
+                <h2 class="text-2xl md:text-3xl font-extrabold text-slate-900 mt-4 mb-1">ពិន្ទុសរុបដែលទទួលបាន</h2>
+                <p class="text-sm text-slate-500 mb-5" id="result-student-info">សិស្ស៖ - | ថ្នាក់៖ -</p>
+                
+                <div class="my-5 flex justify-center items-baseline gap-2">
+                    <span id="score-number" class="text-6xl font-black text-blue-600">0</span>
+                    <span class="text-2xl font-bold text-slate-400">/ 75</span>
+                </div>
+
+                <p id="feedback-text" class="text-slate-600 max-w-md mx-auto mb-6 text-sm md:text-base font-medium">
+                    សារលើកទឹកចិត្ត...
+                </p>
+
+                <!-- Detailed Breakdown Badges -->
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 max-w-2xl mx-auto mb-7 text-sm">
+                    <div class="bg-emerald-50 border border-emerald-200 p-3 rounded-xl text-emerald-800">
+                        <span class="text-xs text-emerald-600 block">ឆ្លើយត្រូវ</span>
+                        <span id="correct-count" class="text-xl font-bold">0</span> សំណួរ
+                    </div>
+                    <div class="bg-rose-50 border border-rose-200 p-3 rounded-xl text-rose-800">
+                        <span class="text-xs text-rose-600 block">ឆ្លើយខុស</span>
+                        <span id="wrong-count" class="text-xl font-bold">0</span> សំណួរ
+                    </div>
+                    <div class="bg-amber-50 border border-amber-200 p-3 rounded-xl text-amber-800">
+                        <span class="text-xs text-amber-600 block">លើសម៉ោង / ចោល</span>
+                        <span id="timeout-count" class="text-xl font-bold">0</span> សំណួរ
+                    </div>
+                    <div class="bg-slate-50 border border-slate-200 p-3 rounded-xl text-slate-800">
+                        <span class="text-xs text-slate-500 block">ភាគរយជោគជ័យ</span>
+                        <span id="percentage-score" class="text-xl font-bold">0%</span>
+                    </div>
+                </div>
+
+                <div class="flex flex-wrap justify-center gap-3">
+                    <button onclick="restartQuiz()" class="px-6 py-2.5 rounded-xl border border-slate-300 font-semibold text-slate-700 hover:bg-slate-50 transition text-sm">
+                        🔄 ធ្វើតេស្តម្តងទៀត
+                    </button>
+                    <a href="#detailed-answers" class="px-6 py-2.5 rounded-xl bg-blue-600 text-white font-semibold hover:bg-blue-700 transition text-sm shadow">
+                        ពិនិត្យចម្លើយកែតម្រូវលម្អិត ↓
+                    </a>
+                </div>
+            </div>
+
+            <!-- Detailed Question-by-Question Review -->
+            <div id="detailed-answers" class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8">
+                <h3 class="text-lg md:text-xl font-bold text-slate-900 mb-6 flex items-center gap-2 border-b pb-3">
+                    📋 ការកែតម្រូវចម្លើយ និងការពន្យល់បែបវិទ្យាសាស្ត្រទាំង ២៥ សំណួរ
+                </h3>
+                <div id="review-list" class="space-y-5">
+                    <!-- Reviews injected dynamically -->
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <footer class="bg-white border-t border-slate-200 py-4 text-center text-xs text-slate-500 mt-auto">
+        កម្មវិធីរៀបចំតេស្តស្វ័យប្រវត្តិ • កំណត់ 1 នាទី/សំណួរ • តម្លៃ 3 ពិន្ទុ/សំណួរ (ពិន្ទុពេញ 75)
+    </footer>
+
+    <!-- Logic Script -->
+    <script>
+        const quizData = [
+            {
+                q: "តើអ្នកវិទ្យាសាស្ត្រណាខ្លះដែលបានរកឃើញទម្រង់គំរូម៉ូដែលខ្សែត្រឡឹងទ្វេនៃម៉ូលេគុល ADN នៅឆ្នាំ 1953?",
+                options: ["Watson និង Crick", "Mendel និង Morgan", "Griffith និង Avery", "Hershey និង Chase"],
+                correct: 0,
+                desc: "James Watson និង Francis Crick បានរកឃើញគំរូខ្សែត្រឡឹងទ្វេនៃ ADN នៅឆ្នាំ 1953 ដោយផ្អែកលើទិន្នន័យរូបភាពកាំរស្មីអ៊ិចរបស់លោកស្រី Rosalind Franklin ។"
+            },
+            {
+                q: "តើម៉ូណូមែដែលជាឯកតាបង្កមូលដ្ឋាននៃម៉ូលេគុល ADN មានឈ្មោះអ្វី?",
+                options: ["អាស៊ីតអាមីណេ", "នុយក្លេអូទីត", "គ្លុយកូស", "អាស៊ីតខ្លាញ់"],
+                correct: 1,
+                desc: "ម៉ូលេគុល ADN គឺជាប៉ូលីមែ (Polymère) ដែលផ្សំឡើងពីបណ្តុំម៉ូណូមែហៅថា នុយក្លេអូទីត (Nucleotide) ។"
+            },
+            {
+                q: "តើនុយក្លេអូទីតនីមួយៗនៃ ADN កើតឡើងពីសមាសធាតុសំខាន់ៗចំនួនប៉ុន្មាន?",
+                options: ["២ សមាសធាតុ", "៣ សមាសធាតុ", "៤ សមាសធាតុ", "៥ សមាសធាតុ"],
+                correct: 1,
+                desc: "នុយក្លេអូទីតនីមួយៗផ្សំឡើងពី ៣ សមាសធាតុ៖ អាស៊ីតផូស្វរិច (H₃PO₄), ស្ករដេអុកស៊ីរីបូស (C₅H₁₀O₄), និងបាសអាសូតមួយ (A, T, C ឬ G) ។"
+            },
+            {
+                q: "តើស្ករដែលជាសមាសធាតុបង្កនៅក្នុងនុយក្លេអូទីតនៃ ADN ជាប្រភេទស្ករអ្វី?",
+                options: ["ស្កររីបូស (C₅H₁₀O₅)", "ស្ករដេអុកស៊ីរីបូស (C₅H₁₀O₄)", "ស្ករគ្លុយកូស (C₆H₁₂O₆)", "ស្ករស៊ុយក្រូស (C₁₂H₂₂O₁₁)"],
+                correct: 1,
+                desc: "ស្ករក្នុង ADN គឺ ដេអុកស៊ីរីបូស (Deoxyribose - C₅H₁₀O₄) ដែលបាត់អាតូមអុកស៊ីសែនមួយនៅកាបូនទីពីរ ធៀបនឹងស្កររីបូសរបស់ ARN ។"
+            },
+            {
+                q: "តើបាសអាសូតទាំង ៤ ប្រភេទនៃម៉ូលេគុល ADN ត្រូវបានបែងចែកជាពីរក្បាលម៉ាស៊ីនគ្រួសារធំៗអ្វីខ្លះ?",
+                options: ["អាល់កាឡាំង និងអាស៊ីត", "ភុយរីន (A, G) និងពីរីមីឌីន (T, C)", "គ្លុយស៊ីត និងលីពីត", "ប្រូតេអ៊ីន និងវីតាមីន"],
+                correct: 1,
+                desc: "បាសទាំង ៤ ចែកជាពីរក្រុម៖ ភុយរីន (Adenine និង Guanine - រចនាសម្ព័ន្ធរង្វង់ពីរ) និង ពីរីមីឌីន (Thymine និង Cytosine - រចនាសម្ព័ន្ធរង្វង់មួយ) ។"
+            },
+            {
+                q: "យោងតាមគោលការណ៍បំពេញបាស តើការភ្ជាប់គ្នារវាងបាសអាសូតនៃច្រវាក់ទាំងពីររបស់ ADN ប្រព្រឹត្តទៅដូចម្តេច?",
+                options: ["A ភ្ជាប់ជាមួយ C ហើយ T ភ្ជាប់ជាមួយ G", "A ភ្ជាប់ជាមួយ G ហើយ T ភ្ជាប់ជាមួយ C", "A ភ្ជាប់ជាមួយ T ហើយ G ភ្ជាប់ជាមួយ C", "A ភ្ជាប់ជាមួយ U ហើយ G ភ្ជាប់ជាមួយ C"],
+                correct: 2,
+                desc: "តាមគោលការណ៍បំពេញបាស បាសភុយរីនតែងតែភ្ជាប់ជាមួយបាសពីរីមីឌីន គឺ A ភ្ជាប់ជាមួយ T និង G ភ្ជាប់ជាមួយ C ជានិច្ច។"
+            },
+            {
+                q: "តើសម្ព័ន្ធគីមីអ្វីដែលភ្ជាប់បាសបំពេញគ្នារវាងច្រវាក់ម្ខាងនិងច្រវាក់ម្ខាងទៀតនៃម៉ូលេគុល ADN?",
+                options: ["សម្ព័ន្ធប៉ិបទីត", "សម្ព័ន្ធអ៊ីដ្រូសែន", "សម្ព័ន្ធកូវ៉ាឡង់", "សម្ព័ន្ធអ៊ីយ៉ុង"],
+                correct: 1,
+                desc: "ច្រវាក់ទាំងពីរត្រូវបានចងភ្ជាប់គ្នាផ្តេកៗដោយសម្ព័ន្ធអ៊ីដ្រូសែន (Hydrogen bonds) រវាងគូបាសបំពេញគ្នា។"
+            },
+            {
+                q: "តើចំនួនសម្ព័ន្ធអ៊ីដ្រូសែនរវាងគូបាសបំពេញគ្នា A-T និង G-C មានចំនួនប៉ុន្មានរៀងគ្នា?",
+                options: ["A-T មាន ២ សម្ព័ន្ធ និង G-C មាន ៣ សម្ព័ន្ធ", "A-T មាន ៣ សម្ព័ន្ធ និង G-C មាន ២ សម្ព័ន្ធ", "A-T មាន ១ សម្ព័ន្ធ និង G-C មាន ២ សម្ព័ន្ធ", "A-T មាន ២ សម្ព័ន្ធ និង G-C មាន ៤ សម្ព័ន្ធ"],
+                correct: 0,
+                desc: "រវាង A និង T ភ្ជាប់គ្នាដោយសម្ព័ន្ធអ៊ីដ្រូសែន ២ ហើយរវាង G និង C ភ្ជាប់គ្នាដោយសម្ព័ន្ធអ៊ីដ្រូសែន ៣ ។"
+            },
+            {
+                q: "យោងតាមច្បាប់សមមូលបាសរបស់លោក Erwin Chargaff តើទំនាក់ទំនងមួយណាត្រឹមត្រូវក្នុង ADN?",
+                options: ["A + C = T + G", "A + T = G + C", "A = C និង T = G", "A / G = T / C = 1"],
+                correct: 0,
+                desc: "យោងច្បាប់ Chargaff៖ A = T និង G = C នាំឱ្យ A + C = T + G ឬ (A + G) = (T + C) (ផលបូកបាសភុយរីនស្មើផលបូកបាសពីរីមីឌីន) ។"
+            },
+            {
+                q: "តើរាល់មួយជំហានគម្លាត (មួយជុំគន្លាក់) នៃខ្សែត្រឡឹងទ្វេ ADN មានប្រវែងប៉ុន្មាន និងផ្ទុកនុយក្លេអូទីតប៉ុន្មានគូ?",
+                options: ["ប្រវែង 2nm មាន ២០ គូ", "ប្រវែង 3.4nm (34Å) មាន ១០ គូ", "ប្រវែង 0.34nm (3.4Å) មាន ១ គូ", "ប្រវែង 34nm មាន ១០០ គូ"],
+                correct: 1,
+                desc: "មួយជុំគន្លាក់ (Helix pitch) មានប្រវែង 3.4 nm (34 Å) និងមាននុយក្លេអូទីតចំនួន ១០ គូ (ចន្លោះមួយគូៗមានប្រវែង 0.34 nm) ។"
+            },
+            {
+                q: "តើអង្កត់ផ្ចិតនៃខ្សែត្រឡឹងទ្វេ ADN មានទំហំប៉ុន្មាន?",
+                options: ["1nm", "2nm", "3.4nm", "20nm"],
+                correct: 1,
+                desc: "អង្កត់ផ្ចិតទទឹងនៃខ្សែត្រឡឹងទ្វេ ADN មានទំហំថេរ 2 nm (20 Å) ។"
+            },
+            {
+                q: "តើដំណើរស្វ័យតម្លើងទ្វេនៃ ADN (ADN Replication) ប្រព្រឹត្តទៅនៅវគ្គណា និងដំណាក់កាលណានៃវដ្តកោសិកា?",
+                options: ["វគ្គប្រូផាស នៃមីតូស", "វគ្គអាណាផាស នៃមេយ៉ូស", "ដំណាក់កាល S នៃចន្លោះវគ្គ (Interphase)", "ដំណាក់កាល G₁ នៃចន្លោះវគ្គ"],
+                correct: 2,
+                desc: "ADN ធ្វើស្វ័យតម្លើងទ្វេនៅដំណាក់កាល S (Synthesis phase) នៃចន្លោះវគ្គ (Interphase) មុនពេលកោសិកាចាប់ផ្តើមចែកណ្វៃយ៉ូ។"
+            },
+            {
+                q: "ហេតុអ្វីបានជាដំណើរស្វ័យតម្លើងទ្វេនៃ ADN ហៅថាការតម្លើងទ្វេតាមបែប «កណ្តាលអភិរក្ស» (Semi-conservative)?",
+                options: ["ព្រោះម៉ូលេគុល ADN កូននីមួយៗរក្សាទុកច្រវាក់ចាស់ទាំងពីរ", "ព្រោះច្រវាក់ទាំងពីរនៃ ADN កូនសុទ្ធសឹងតែជាច្រវាក់សំយោគថ្មី", "ព្រោះម៉ូលេគុល ADN កូននីមួយៗមានច្រវាក់មួយចាស់ជាពុម្ពគំរូ និងច្រវាក់មួយទៀតទើបសំយោគថ្មី", "ព្រោះម៉ូលេគុល ADN ចាស់ត្រូវបំផ្លាញចោលទាំងស្រុងក្រោយសំយោគរួច"],
+                correct: 2,
+                desc: "ហៅថាកណ្តាលអភិរក្ស ពីព្រោះម៉ូលេគុល ADN កូននីមួយៗទទួលបានច្រវាក់មួយជាច្រវាក់មេ (ចាស់) និងច្រវាក់មួយទៀតជាច្រវាក់ទើបសំយោគថ្មី។"
+            },
+            {
+                q: "តើអង់ស៊ីមណាដែលមាននាទីផ្តាច់សម្ព័ន្ធអ៊ីដ្រូសែនដើម្បីស្រាយរង្វាខ្សែត្រឡឹងទ្វេនៃ ADN ឱ្យទៅជាច្រវាក់ទោលពីរ?",
+                options: ["Helicase", "DNA polymerase", "DNA ligase", "Protease"],
+                correct: 0,
+                desc: "អង់ស៊ីម Helicase មានតួនាទីកាត់ផ្តាច់សម្ព័ន្ធអ៊ីដ្រូសែនរវាងគូបាស ដើម្បីស្រាយរង្វាខ្សែត្រឡឹងទ្វេ ADN ឱ្យបើកជាច្រវាក់ទោលពីរ (Replication fork) ។"
+            },
+            {
+                q: "តើអង់ស៊ីម ADN polymerase បំពេញនាទីសំខាន់អ្វីក្នុងដំណើរស្វ័យតម្លើងទ្វេ ADN?",
+                options: ["ចងភ្ជាប់កំណាត់ Okazaki ចូលគ្នា", "នាំយកនុយក្លេអូទីតសេរីមកភ្ជាប់បំពេញតាមលំដាប់បាសនៃច្រវាក់ពុម្ព", "បំបែកស្ករដេអុកស៊ីរីបូសដើម្បីបញ្ចេញថាមពល", "រំលាយស្រោមណ្វៃយ៉ូកោសិកា"],
+                correct: 1,
+                desc: "ADN polymerase ចាប់យកនុយក្លេអូទីតសេរីក្នុងប្លាសណ្វៃយ៉ូ មកតម្រៀបបំពេញតាមគោលការណ៍បំពេញបាសលើច្រវាក់ពុម្ពគំរូ។"
+            },
+            {
+                q: "តើទិសដៅនៃការសំយោគច្រវាក់ថ្មីដោយអង់ស៊ីម ADN polymerase តែងតែប្រព្រឹត្តទៅក្នុងទិសដៅណា?",
+                options: ["ពី 3' ទៅ 5'", "ពី 5' ទៅ 3'", "ពីឆ្វេងទៅស្តាំជានិច្ច", "ទៅមកសងខាងក្នុងពេលតែមួយ"],
+                correct: 1,
+                desc: "ADN polymerase អាចបន្ថែមនុយក្លេអូទីតថ្មីបានតែនៅចុង 3'-OH ប៉ុណ្ណោះ ដូច្នេះការសំយោគច្រវាក់ថ្មីតែងតែប្រព្រឹត្តទៅក្នុងទិសដៅ 5' ទៅ 3' ជានិច្ច។"
+            },
+            {
+                q: "តើច្រវាក់ថ្មីដែលសំយោគជាប់គ្នាមិនដាច់តាមទិសដៅនៃការស្រាយរង្វាហៅថាអ្វី?",
+                options: ["ច្រវាក់នាំមុខ (Leading strand)", "ច្រវាក់ដើរតាម (Lagging strand)", "កំណាត់ Okazaki", "ច្រវាក់មិនពេញលេញ"],
+                correct: 0,
+                desc: "ច្រវាក់នាំមុខ (Leading strand) សំយោគក្នុងទិសដៅ 5' -> 3' ស្របតាមទិសដៅនៃការស្រាយរង្វា ធ្វើឱ្យការសំយោគជាប់គ្នាមិនដាច់។"
+            },
+            {
+                q: "តើកំណាត់ខ្លីៗនៃ ADN ដែលសំយោគដាច់ៗពីគ្នានៅលើច្រវាក់ដើរតាមហៅថាអ្វី?",
+                options: ["កំណាត់ Watson", "កំណាត់ Crick", "កំណាត់ Okazaki", "កំណាត់ Primer"],
+                correct: 2,
+                desc: "នៅលើច្រវាក់ដើរតាម (Lagging strand) ការសំយោគប្រព្រឹត្តទៅផ្ទុយពីទិសដៅស្រាយរង្វា បង្កើតបានជាកំណាត់ខ្លីៗដាច់ពីគ្នាហៅថា កំណាត់ Okazaki ។"
+            },
+            {
+                q: "តើអង់ស៊ីមណាដែលមាននាទីផ្សារភ្ជាប់កំណាត់ Okazaki ឱ្យជាប់គ្នាក្លាយជាច្រវាក់បន្តតែមួយ?",
+                options: ["Helicase", "DNA polymerase", "DNA ligase", "Amylase"],
+                correct: 2,
+                desc: "អង់ស៊ីម DNA ligase ដើរតួជាកាវជីវសាស្ត្រក្នុងការផ្សារភ្ជាប់សម្ព័ន្ធផូស្វូឌីអែស្ទែរវាងកំណាត់ Okazaki នានាចូលគ្នាជាច្រវាក់ជាប់។"
+            },
+            {
+                q: "នៅក្នុងកោសិកាអឺការីយ៉ូត តើម៉ូលេគុល ADN ភាគច្រើនស្ថិតនៅឯណា?",
+                options: ["ក្នុងរីបូសូម", "ក្នុងណ្វៃយ៉ូ", "ក្នុងប្រដាប់កុលស៊ី", "លើភ្នាសកោសិកា"],
+                correct: 1,
+                desc: "នៅក្នុងកោសិកាអឺការីយ៉ូត ADN ភាគច្រើនត្រូវបានរក្សាទុកយ៉ាងមានសុវត្ថិភាពនៅក្នុងណ្វៃយ៉ូកោសិកាក្នុងទម្រង់ជាក្រូម៉ាទីន។"
+            },
+            {
+                q: "ក្រៅពីក្នុងណ្វៃយ៉ូ តើសរីរាង្គកោសិកាណាខ្លះដែលមានផ្ទុកម៉ូលេគុល ADN ផ្ទាល់ខ្លួន?",
+                options: ["រីបូសូម និងរ៉េទីគុយឡូមអង់ដូប្លាស", "មីតូកុងឌ្រី និងក្លរ៉ូប្លាស", "ប្រដាប់កុលស៊ី និងលីសូម", "វ៉ាគុយអួល និងសង់ទ្រូសូម"],
+                correct: 1,
+                desc: "មីតូកុងឌ្រី (Mitochondria) និងក្លរ៉ូប្លាស (Chloroplast - ក្នុងរុក្ខជាតិ) មានម៉ូលេគុល ADN រាងជារង្វង់ផ្ទាល់ខ្លួន តាមទ្រឹស្តី Endosymbiosis ។"
+            },
+            {
+                q: "ប្រសិនបើច្រវាក់ម្ខាងនៃម៉ូលេគុល ADN មានលំដាប់បាស 5'-A-T-G-C-C-A-3' តើលំដាប់បាសបំពេញនៅលើច្រវាក់ម្ខាងទៀតគឺអ្វី?",
+                options: ["3'-T-A-C-G-G-T-5'", "3'-U-A-C-G-G-U-5'", "3'-A-T-G-C-C-A-5'", "3'-G-C-T-A-A-C-5'"],
+                correct: 0,
+                desc: "ច្រវាក់ទាំងពីរមានទិសដៅប្រឆាំងគ្នា (Antiparallel) និងបំពេញបាស A-T, T-A, G-C, C-G ។ ដូច្នេះ 5'-A-T-G-C-C-A-3' ទៅជា 3'-T-A-C-G-G-T-5' ។"
+            },
+            {
+                q: "ម៉ូលេគុល ADN មួយមាននុយក្លេអូទីតសរុបចំនួន 3000 ។ ប្រសិនបើបាសអាដេនីន (A) មានចំនួន 600 តើបាសហ្គានីន (G) មានចំនួនប៉ុន្មាន?",
+                options: ["600", "900", "1200", "1500"],
+                correct: 1,
+                desc: "យោងតាមរូបមន្ត៖ A = T = 600 => A + T = 1200។ នុយក្លេអូទីតសរុប N = (A+T) + (G+C) = 3000 => G + C = 3000 - 1200 = 1800។ ដោយ G = C => G = 1800 / 2 = 900 ។"
+            },
+            {
+                q: "តើសម្ព័ន្ធគីមីអ្វីដែលភ្ជាប់នុយក្លេអូទីតមួយទៅនុយក្លេអូទីតមួយទៀតនៅលើច្រវាក់តែមួយនៃ ADN?",
+                options: ["សម្ព័ន្ធផូស្វូឌីអែស្ទែ", "សម្ព័ន្ធអ៊ីដ្រូសែន", "សម្ព័ន្ធប៉ិបទីត", "សម្ព័ន្ធគ្លីកូស៊ីឌីក"],
+                correct: 0,
+                desc: "នៅលើច្រវាក់ទោលតែមួយ នុយក្លេអូទីតតៗគ្នាត្រូវបានភ្ជាប់ដោយសម្ព័ន្ធផូស្វូឌីអែស្ទែ (Phosphodiester bond) រវាងក្រុមផូស្វាត និងស្ករដេអុកស៊ីរីបូស។"
+            },
+            {
+                q: "ហេតុអ្វីបានជាម៉ូលេគុល ADN ត្រូវបានគេចាត់ទុកថាជា «ទម្រព័ត៌មានសេនេទិច»?",
+                options: ["ព្រោះវាផ្ទុកព័ត៌មានសេនេទិចកំណត់លក្ខណៈភាវៈរស់ និងអាចចម្លងចែកទៅកោសិកាកូនបានត្រឹមត្រូវ", "ព្រោះវាជាប្រភពថាមពលចម្បងសម្រាប់កោសិកាប្រើប្រាស់ប្រចាំថ្ងៃ", "ព្រោះវាជាអង់ស៊ីមជំរុញគ្រប់ប្រតិកម្មជីវគីមីទាំងអស់ក្នុងកោសិកា", "ព្រោះវាការពារកោសិកាមិនឱ្យបាត់បង់ជាតិទឹកទៅមជ្ឈដ្ឋានក្រៅ"],
+                correct: 0,
+                desc: "ADN ផ្ទុកកូដសេនេទិចកំណត់រាល់លក្ខណៈរូបរាង មុខងាររបស់ភាវៈរស់ និងអាចចម្លងស្វ័យតម្លើងទ្វេផ្ទេរទៅជំនាន់កូនចៅឥតល្អៀង។"
+            }
+        ];
+
+        const QUESTION_TIME_LIMIT = 60; // 60 វិនាទី (1 នាទី) ក្នុង 1 សំណួរ
+        const POINTS_PER_QUESTION = 3;  // 3 ពិន្ទុក្នុង 1 សំណួរ
+        
+        let studentName = "";
+        let studentClass = "";
+        let currentQuestionIndex = 0;
+        let userAnswers = new Array(quizData.length).fill(null);
+        let timeRemaining = QUESTION_TIME_LIMIT;
+        let timerInterval = null;
+
+        // UI references
+        const startScreen = document.getElementById('start-screen');
+        const quizScreen = document.getElementById('quiz-screen');
+        const resultScreen = document.getElementById('result-screen');
+        const quizHeaderStatus = document.getElementById('quiz-header-status');
+        const timerBarContainer = document.getElementById('timer-bar-container');
+        const timerBarFill = document.getElementById('timer-bar-fill');
+        const timerDisplay = document.getElementById('timer-display');
+        const headerProgress = document.getElementById('header-progress');
+        const qTimerInline = document.getElementById('q-timer-inline');
+        const timerBox = document.getElementById('timer-box');
+        const currentQNum = document.getElementById('current-q-num');
+        const questionText = document.getElementById('question-text');
+        const optionsContainer = document.getElementById('options-container');
+        const nextBtn = document.getElementById('next-btn');
+        const paletteContainer = document.getElementById('palette-container');
+
+        function validateAndStartQuiz() {
+            const nameInput = document.getElementById('student-name').value.trim();
+            const classInput = document.getElementById('student-class').value.trim();
+
+            if (!nameInput || !classInput) {
+                alert("សូមមេត្តាបំពេញ គោត្តនាម-នាម និងថ្នាក់រៀន ឱ្យបានពេញលេញជាមុនសិន!");
+                return;
+            }
+
+            studentName = nameInput;
+            studentClass = classInput;
+            document.getElementById('student-badge-text').innerText = `${studentName} (${studentClass})`;
+
+            startScreen.classList.add('hidden');
+            resultScreen.classList.add('hidden');
+            quizScreen.classList.remove('hidden');
+            quizHeaderStatus.classList.remove('hidden');
+            timerBarContainer.classList.remove('hidden');
+
+            renderPalette();
+            loadQuestion(0);
+        }
+
+        function renderPalette() {
+            paletteContainer.innerHTML = '';
+            quizData.forEach((_, idx) => {
+                const btn = document.createElement('div');
+                btn.id = `palette-item-${idx}`;
+                btn.className = `w-8 h-8 rounded-lg text-xs font-bold flex items-center justify-center border bg-slate-100 text-slate-500 border-slate-200 transition`;
+                btn.innerText = idx + 1;
+                paletteContainer.appendChild(btn);
+            });
+        }
+
+        function updatePaletteUI() {
+            quizData.forEach((_, idx) => {
+                const el = document.getElementById(`palette-item-${idx}`);
+                if (!el) return;
+                
+                if (idx === currentQuestionIndex) {
+                    el.classList.add('ring-2', 'ring-amber-500', 'ring-offset-1');
+                } else {
+                    el.classList.remove('ring-2', 'ring-amber-500', 'ring-offset-1');
+                }
+
+                if (userAnswers[idx] !== null) {
+                    el.className = 'w-8 h-8 rounded-lg text-xs font-bold flex items-center justify-center border bg-blue-600 text-white border-blue-600';
+                }
+            });
+        }
+
+        function startTimer() {
+            clearInterval(timerInterval);
+            timeRemaining = QUESTION_TIME_LIMIT;
+            updateTimerDisplay();
+
+            timerInterval = setInterval(() => {
+                timeRemaining--;
+                updateTimerDisplay();
+
+                if (timeRemaining <= 0) {
+                    clearInterval(timerInterval);
+                    handleTimeOut();
+                }
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            const mins = Math.floor(timeRemaining / 60);
+            const secs = timeRemaining % 60;
+            timerDisplay.innerText = `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+            qTimerInline.innerText = timeRemaining;
+
+            const pct = (timeRemaining / QUESTION_TIME_LIMIT) * 100;
+            timerBarFill.style.width = `${pct}%`;
+
+            if (timeRemaining <= 15) {
+                timerBarFill.className = 'bg-rose-500 h-1.5 transition-all duration-1000 ease-linear';
+                timerBox.classList.add('text-rose-600', 'timer-warning-alert', 'border-rose-300');
+                timerDisplay.classList.remove('text-blue-700');
+                timerDisplay.classList.add('text-rose-600');
+            } else {
+                timerBarFill.className = 'bg-amber-400 h-1.5 transition-all duration-1000 ease-linear';
+                timerBox.classList.remove('text-rose-600', 'timer-warning-alert', 'border-rose-300');
+                timerDisplay.classList.remove('text-rose-600');
+                timerDisplay.classList.add('text-blue-700');
+            }
+        }
+
+        function handleTimeOut() {
+            if (currentQuestionIndex < quizData.length - 1) {
+                loadQuestion(currentQuestionIndex + 1);
+            } else {
+                finishQuiz();
+            }
+        }
+
+        function loadQuestion(index) {
+            currentQuestionIndex = index;
+            const q = quizData[index];
+
+            currentQNum.innerText = `សំណួរទី ${index + 1} នៃ ${quizData.length}`;
+            headerProgress.innerText = `${index + 1} / ${quizData.length}`;
+            questionText.innerText = q.q;
+
+            optionsContainer.innerHTML = '';
+            const labels = ['ក', 'ខ', 'គ', 'ឃ'];
+
+            q.options.forEach((optText, optIndex) => {
+                const isSelected = userAnswers[index] === optIndex;
+                const optionDiv = document.createElement('div');
+                optionDiv.onclick = () => selectOption(optIndex);
+                optionDiv.className = `p-4 rounded-xl border-2 cursor-pointer transition flex items-center gap-3.5 ${
+                    isSelected 
+                        ? 'border-blue-600 bg-blue-50/80 text-blue-950 shadow-sm' 
+                        : 'border-slate-200 bg-white text-slate-800 hover:border-slate-300 hover:bg-slate-50'
+                }`;
+
+                optionDiv.innerHTML = `
+                    <span class="w-8 h-8 rounded-lg flex items-center justify-center font-bold text-sm shrink-0 ${
+                        isSelected ? 'bg-blue-600 text-white' : 'bg-slate-100 text-slate-700'
+                    }">${labels[optIndex]}</span>
+                    <span class="text-base font-medium flex-1">${optText}</span>
+                    <input type="radio" name="opt" class="w-4 h-4 text-blue-600 accent-blue-600" ${isSelected ? 'checked' : ''} />
+                `;
+                optionsContainer.appendChild(optionDiv);
+            });
+
+            if (index === quizData.length - 1) {
+                nextBtn.innerText = "បញ្ចប់ការប្រឡង ✔";
+                nextBtn.className = "px-7 py-2.5 rounded-lg bg-emerald-600 text-white font-semibold hover:bg-emerald-700 active:scale-95 transition shadow";
+            } else {
+                nextBtn.innerText = "បន្ទាប់ →";
+                nextBtn.className = "px-7 py-2.5 rounded-lg bg-blue-600 text-white font-semibold hover:bg-blue-700 active:scale-95 transition shadow";
+            }
+
+            updatePaletteUI();
+            startTimer();
+        }
+
+        function selectOption(optIndex) {
+            userAnswers[currentQuestionIndex] = optIndex;
+            loadQuestion(currentQuestionIndex);
+        }
+
+        function nextQuestionByButton() {
+            clearInterval(timerInterval);
+            if (currentQuestionIndex < quizData.length - 1) {
+                loadQuestion(currentQuestionIndex + 1);
+            } else {
+                finishQuiz();
+            }
+        }
+
+        function finishQuiz() {
+            clearInterval(timerInterval);
+
+            let correctCount = 0;
+            let timeoutOrSkipped = 0;
+
+            quizData.forEach((q, idx) => {
+                if (userAnswers[idx] === q.correct) {
+                    correctCount++;
+                } else if (userAnswers[idx] === null) {
+                    timeoutOrSkipped++;
+                }
+            });
+
+            const wrongCount = quizData.length - correctCount - timeoutOrSkipped;
+            const totalScore = correctCount * POINTS_PER_QUESTION; // 3 ពិន្ទុ/សំណួរ
+            const maxScore = quizData.length * POINTS_PER_QUESTION; // 75 ពិន្ទុពេញ
+            const percentage = Math.round((totalScore / maxScore) * 100);
+
+            // Screen Switching
+            quizScreen.classList.add('hidden');
+            quizHeaderStatus.classList.add('hidden');
+            timerBarContainer.classList.add('hidden');
+            resultScreen.classList.remove('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            document.getElementById('result-student-info').innerText = `សិស្ស៖ ${studentName} | ថ្នាក់៖ ${studentClass}`;
+            document.getElementById('score-number').innerText = totalScore;
+            document.getElementById('correct-count').innerText = correctCount;
+            document.getElementById('wrong-count').innerText = wrongCount;
+            document.getElementById('timeout-count').innerText = timeoutOrSkipped;
+            document.getElementById('percentage-score').innerText = `${percentage}%`;
+
+            const badge = document.getElementById('result-badge');
+            const feedback = document.getElementById('feedback-text');
+
+            if (percentage >= 80) {
+                badge.className = "px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wide bg-emerald-100 text-emerald-800";
+                badge.innerText = "🌟 លទ្ធផលឆ្នើម (និទ្ទេស A/B)";
+                feedback.innerText = "អបអរសាទរ! អ្នកមានការយល់ដឹងច្បាស់លាស់ណាស់លើទម្រង់ម៉ូលេគុល ADN និងអាចឆ្លើយបានយ៉ាងលឿនក្នុងពេលកំណត់។";
+            } else if (percentage >= 50) {
+                badge.className = "px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wide bg-amber-100 text-amber-800";
+                badge.innerText = "👍 លទ្ធផលមធ្យម (ជាប់ការប្រឡង)";
+                feedback.innerText = "ធ្វើបានល្អគួរសម! សូមពិនិត្យមើលសំណួរដែលខុស ឬលើសម៉ោងខាងក្រោម ដើម្បីពង្រឹងការចងចាំបន្ថែម។";
+            } else {
+                badge.className = "px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wide bg-rose-100 text-rose-800";
+                badge.innerText = "⚠️ ត្រូវខិតខំពង្រឹងបន្ថែម";
+                feedback.innerText = "កុំទាន់អស់សង្ឃឹម! សូមអានចម្លើយកែតម្រូវ និងការពន្យល់លម្អិតខាងក្រោម រួចសាកល្បងធ្វើម្តងទៀត។";
+            }
+
+            renderReviewList();
+        }
+
+        function renderReviewList() {
+            const container = document.getElementById('review-list');
+            container.innerHTML = '';
+            const labels = ['ក', 'ខ', 'គ', 'ឃ'];
+
+            quizData.forEach((item, idx) => {
+                const userChoice = userAnswers[idx];
+                const isCorrect = (userChoice === item.correct);
+                const isTimeout = (userChoice === null);
+
+                const card = document.createElement('div');
+                card.className = `p-5 rounded-xl border ${
+                    isCorrect 
+                        ? 'border-emerald-200 bg-emerald-50/25' 
+                        : isTimeout 
+                            ? 'border-amber-200 bg-amber-50/30' 
+                            : 'border-rose-200 bg-rose-50/25'
+                }`;
+
+                let statusBadge = '';
+                if (isCorrect) {
+                    statusBadge = `<span class="inline-flex items-center gap-1 text-xs font-bold px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-700">✓ ត្រឹមត្រូវ (+3 ពិន្ទុ)</span>`;
+                } else if (isTimeout) {
+                    statusBadge = `<span class="inline-flex items-center gap-1 text-xs font-bold px-2.5 py-1 rounded-full bg-amber-100 text-amber-800">⏱️ លើសម៉ោង (0 ពិន្ទុ)</span>`;
+                } else {
+                    statusBadge = `<span class="inline-flex items-center gap-1 text-xs font-bold px-2.5 py-1 rounded-full bg-rose-100 text-rose-700">✕ ឆ្លើយខុស (0 ពិន្ទុ)</span>`;
+                }
+
+                card.innerHTML = `
+                    <div class="flex items-start justify-between gap-4 mb-3">
+                        <span class="font-bold text-slate-800 text-sm">សំណួរទី ${idx + 1}</span>
+                        ${statusBadge}
+                    </div>
+                    <p class="font-semibold text-slate-900 text-base mb-4 leading-snug">${item.q}</p>
+                    
+                    <div class="space-y-2 text-sm mb-4">
+                        <div class="p-2.5 rounded-lg flex items-center gap-2 ${
+                            isCorrect ? 'bg-emerald-100/70 text-emerald-900 font-semibold' : 'bg-slate-100 text-slate-700'
+                        }">
+                            <span class="font-bold text-xs uppercase px-1.5 py-0.5 rounded bg-white/80">ចម្លើយត្រឹមត្រូវ៖</span>
+                            <span><strong>${labels[item.correct]}.</strong> ${item.options[item.correct]}</span>
+                        </div>
+                        ${!isCorrect ? `
+                        <div class="p-2.5 rounded-lg flex items-center gap-2 ${isTimeout ? 'bg-amber-100/70 text-amber-900' : 'bg-rose-100/70 text-rose-900'}">
+                            <span class="font-bold text-xs uppercase px-1.5 py-0.5 rounded bg-white/80">ចម្លើយសិស្ស៖</span>
+                            <span>${userChoice !== null ? `<strong>${labels[userChoice]}.</strong> ${item.options[userChoice]}` : '<em class="text-amber-700 font-medium">មិនបានឆ្លើយ (អស់ពេល ១ នាទី)</em>'}</span>
+                        </div>
+                        ` : ''}
+                    </div>
+
+                    <div class="bg-blue-50 border-l-4 border-blue-500 p-3 rounded-r-lg text-xs leading-relaxed text-blue-950">
+                        <strong>💡 ការពន្យល់វិទ្យាសាស្ត្រ៖</strong> ${item.desc}
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function restartQuiz() {
+            userAnswers = new Array(quizData.length).fill(null);
+            currentQuestionIndex = 0;
+            startScreen.classList.remove('hidden');
+            resultScreen.classList.add('hidden');
+            quizScreen.classList.add('hidden');
+            quizHeaderStatus.classList.add('hidden');
+            timerBarContainer.classList.add('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>
